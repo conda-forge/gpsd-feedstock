@@ -21,15 +21,15 @@
              except OSError:
                  announce("pkg_config is confused about the state "
                           "of libusb-1.0.")
-@@ -1529,7 +1534,7 @@
+@@ -1426,7 +1426,7 @@
  
  target_python_path = ''
  py_config_text = str(eval(PYTHON_CONFIG_CALL))
 -python_libdir = str(eval(PYTHON_LIBDIR_CALL))
 +python_libdir = os.environ.get('SP_DIR')
- config.env['xgps_deps'] = False
  
- if not cleaning and not helping and config.env['python']:
+ # flag if we have xgps* dependencies, so xgps* should run OK
+ config.env['xgps_deps'] = False
 @@ -2526,6 +2531,7 @@
       not env['nostrip'] and not sys.platform.startswith('darwin'))):
      env.AddPostAction(binaryinstall, '$STRIP $TARGET')
