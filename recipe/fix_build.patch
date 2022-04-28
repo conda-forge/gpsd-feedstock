@@ -13,6 +13,14 @@
  
  
  # Keep scan-build options in the environment
+@@ -922,7 +922,6 @@ if not cleaning and not helping:
+     if (sys.platform != config.env['target_platform']):
+         announce("Target system is: %s" % config.env['target_platform'])
+ 
+-    announce("cc is %s, version %s" % (env['CC'], env['CCVERSION']))
+     # clang accepts -pthread, then warns it is unused.
+     if not config.CheckCC():
+         announce("ERROR: CC doesn't work")
 @@ -1155,6 +1159,7 @@
              confdefs.append("#define HAVE_LIBUSB 1\n")
              try:
@@ -38,4 +46,16 @@
  python_module_dir = str(python_libdir) + os.sep + 'gps'
  
  python_modules_install = env.Install(DESTDIR + python_module_dir,
-
+diff --git a/clients/ppscheck.c b/clients/ppscheck.c
+index b1f7f54c5..8205ed73d 100644
+--- a/clients/ppscheck.c
++++ b/clients/ppscheck.c
+@@ -600,7 +600,7 @@ int main(int argc, char *argv[])
+          * if (0 == ioctl(device_fd, TIOCGETD, &ldisc)) {
+          * always returns ldisc == 0 */
+         // set PPS line discipline
+-        ldisc = N_PPS;    // 18 - the PPS line discipline
++        ldisc = 18;    // 18 - the PPS line discipline
+         if (0 > ioctl(device_fd, TIOCSETD, &ldisc)) {
+             (void)printf("ERROR: ioctl(%s, TIOCSETD, 18) failed: %.80s(%d)\n",
+                          argv[1], strerror(errno), errno);
