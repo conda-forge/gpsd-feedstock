@@ -1,18 +1,18 @@
 {% set name = "gpsd" %}
-{% set version = "3.23" %}
+{% set version = "3.24" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  - url: http://download.savannah.gnu.org/releases/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 522c2362a7eb2d7ac37eaa1504f12aded1c373479a87ba06cc6795974b567bbc
+  - url: http://download.savannah.gnu.org/releases/{{ name }}/{{ name }}-{{ version }}.tar.xz
+    sha256: dab45874c6da0ac604e3553b79fc228c25d6e71a32310a3467fb3bd9974e3755
     patches:
       - fix_build.patch
 
 build:
-  number: 1
+  number: 0
   skip: true  # [not linux]
   run_exports:
     - {{ pin_subpackage('gpsd', max_pin='x.x') }}
