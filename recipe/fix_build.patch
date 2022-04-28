@@ -13,6 +13,14 @@
  
  
  # Keep scan-build options in the environment
+@@ -922,7 +922,6 @@ if not cleaning and not helping:
+     if (sys.platform != config.env['target_platform']):
+         announce("Target system is: %s" % config.env['target_platform'])
+ 
+-    announce("cc is %s, version %s" % (env['CC'], env['CCVERSION']))
+     # clang accepts -pthread, then warns it is unused.
+     if not config.CheckCC():
+         announce("ERROR: CC doesn't work")
 @@ -1155,6 +1159,7 @@
              confdefs.append("#define HAVE_LIBUSB 1\n")
              try:
