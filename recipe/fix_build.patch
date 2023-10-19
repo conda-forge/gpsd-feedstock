@@ -2,6 +2,27 @@ diff --git a/SConscript b/SConscript
 index 3b9d9aa4c..df069219c 100644
 --- a/SConscript
 +++ b/SConscript
+@@ -19,10 +19,7 @@ import re
+ import subprocess
+ import sys
+ import time
+-try:
+-    from setuptools import sysconfig
+-except:
+-    from distutils import sysconfig
++import sysconfig
+ import SCons
+ 
+ # scons does not like targets that come and go (if cleaning, if python,
+@@ -265,7 +262,7 @@ website = "https://gpsd.io/"
+ # Hosting information ends here
+ 
+ 
+-PYTHON_SYSCONFIG_IMPORT = 'from distutils import sysconfig'
++PYTHON_SYSCONFIG_IMPORT = 'import sysconfig'
+ 
+ # Utility productions
+ 
 @@ -624,8 +624,11 @@
            "SHLINKFLAGS",
            ]:
@@ -24,6 +45,15 @@ index 3b9d9aa4c..df069219c 100644
              except OSError:
                  announce("pkg_config is confused about the state "
                           "of libusb-1.0.")
+@@ -1538,7 +1535,7 @@ if not cleaning and not helping:
+ 
+ # Set up configuration for target Python
+ 
+-PYTHON_LIBDIR_CALL = 'sysconfig.get_python_lib()'
++PYTHON_LIBDIR_CALL = 'sysconfig.get_path("platlib")'
+ 
+ PYTHON_CONFIG_NAMES = ['SO']  # Now a fairly degenerate list
+ PYTHON_CONFIG_QUOTED = ["'%s'" % s for s in PYTHON_CONFIG_NAMES]
 @@ -1564,7 +1568,7 @@ python_config = {}  # Dummy for all non-Python-build cases
  
  target_python_path = ''
