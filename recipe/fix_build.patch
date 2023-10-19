@@ -2,10 +2,10 @@ diff --git a/SConscript b/SConscript
 index 3b9d9aa4c..df069219c 100644
 --- a/SConscript
 +++ b/SConscript
-@@ -626,8 +626,11 @@ for i in ["ARFLAGS",
+@@ -624,8 +624,11 @@
+           "SHLINKFLAGS",
+           ]:
      if i in os.environ:
-         # MergeFlags() puts the options where scons wants them, not
-         # where you asked them to go.
 -        env.MergeFlags(Split(os.getenv(i)))
 -
 +        if i == 'CPPFLAGS' or i == 'CFLAGS' or i == 'CXXFLAGS':
