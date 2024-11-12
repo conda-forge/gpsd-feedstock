@@ -22,12 +22,11 @@ requirements:
     - {{ compiler('c') }}
     - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
-    - {{ cdt('libudev') }}
-    - {{ cdt('libudev-devel') }}
     - scons
   host:
     - python
     - libusb
+    - libudev
     - ncurses
     - pyserial
     - matplotlib-base
