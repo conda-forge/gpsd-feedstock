@@ -29,10 +29,10 @@ index 3b9d9aa4c..df069219c 100644
              except OSError:
                  announce("pkg_config is confused about the state "
                           "of libusb-1.0.")
-@@ -1564,7 +1568,7 @@ python_config = {}  # Dummy for all non-Python-build cases
+@@ -1580,7 +1580,7 @@ if not cleaning and not helping:
+ PYTHON_LIBDIR_CALL = "sysconfig.get_path('purelib')"
  
  target_python_path = ''
- py_config_text = str(eval(PYTHON_CONFIG_CALL))
 -python_libdir = str(eval(PYTHON_LIBDIR_CALL))
 +python_libdir = os.environ.get('SP_DIR')
  
