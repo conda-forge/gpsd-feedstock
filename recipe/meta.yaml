@@ -12,8 +12,8 @@ source:
       - fix_build.patch
 
 build:
-  number: 1
-  skip: true  # [not linux]
+  number: 2
+  skip: true  # [win]
   run_exports:
     - {{ pin_subpackage('gpsd', max_pin='x.x') }}
 
@@ -26,7 +26,7 @@ requirements:
   host:
     - python
     - libusb
-    - libudev
+    - libudev  # [linux]
     - ncurses
     - pyserial
     - matplotlib-base
@@ -38,6 +38,11 @@ test:
     - test -f $PREFIX/lib/pkgconfig/libgps.pc  # [unix]
     - test -f $PREFIX/include/gps.h  # [unix]
     - test -f $PREFIX/bin/gpsfake  # [unix]
+    - gpsfake -h  # [unix]
+    - cgps -h  # [unix]
+    - $PREFIX/sbin/gpsd -h  # [unix]
+  imports:
+    - gps
 
 
 about:
