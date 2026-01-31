@@ -38,6 +38,11 @@ test:
     - test -f $PREFIX/lib/pkgconfig/libgps.pc  # [unix]
     - test -f $PREFIX/include/gps.h  # [unix]
     - test -f $PREFIX/bin/gpsfake  # [unix]
+    - gpsfake -h  # [unix]
+    - cgps -h  # [unix]
+    - $PREFIX/sbin/gpsd -h  # [unix]
+  imports
+    - gps
 
 
 about:
