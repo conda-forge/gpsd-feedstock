@@ -41,7 +41,7 @@ test:
     - gpsfake -h  # [unix]
     - cgps -h  # [unix]
     - $PREFIX/sbin/gpsd -h  # [unix]
-  imports
+  imports:
     - gps
 
 
