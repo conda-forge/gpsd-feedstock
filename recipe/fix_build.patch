@@ -1,56 +1,52 @@
+From c29730f9844fc75a1e481b641e4f4e8000ad4611 Mon Sep 17 00:00:00 2001
+From: Wolf Vollprecht <w.vollprecht@gmail.com>
+Date: Thu, 12 Nov 2026 08:00:18 +0100
+Subject: [PATCH] Adapt build checks to the conda toolchain
+
+Retain conda compiler flag and Linux PPS workarounds. Link libudev only on Linux, not macOS. Python installation paths are now set via the supported python_libdir option.
+---
+ SConscript         | 8 ++++----
+ clients/ppscheck.c | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
 diff --git a/SConscript b/SConscript
-index 3b9d9aa4c..df069219c 100644
+index 794463a..76b8ed5 100644
 --- a/SConscript
 +++ b/SConscript
-@@ -821,7 +818,7 @@ def CheckCompilerOption(context, option):
+@@ -828,8 +828,7 @@ def CheckCompilerOption(context, option):
+     old_CFLAGS = context.env['CFLAGS'][:]  # Get a *copy* of the old list
      context.env.Append(CFLAGS=option)
      new_CFLAGS = context.env['CFLAGS'][:]  # Get a *copy* of the old list
-     # we don't want to use options that gernerate warnings.
+-    # we don't want to use options that generate warnings.
 -    context.env.Append(CFLAGS="-Werror")
-+    # context.env.Append(CFLAGS="-Werror")
++    # Conda's toolchain can warn about unused flags during feature checks.
      ret = context.TryLink("""
          int main(int argc, char **argv) {
              (void) argc; (void) argv;
-@@ -951,8 +948,7 @@ if not cleaning and not helping:
+@@ -960,8 +959,7 @@ if not cleaning and not helping:
      if not config.CheckCC():
          announce("ERROR: CC doesn't work")
  
 -    if ((config.CheckCompilerOption("-pthread") and
 -         not config.env['target_platform'].startswith('darwin'))):
-+    if ((not config.env['target_platform'].startswith('darwin'))):
++    if not config.env['target_platform'].startswith('darwin'):
          config.env.MergeFlags("-pthread")
  
      if config.env['target_platform'].startswith('openbsd7'):
-@@ -1137,6 +1140,7 @@ if not cleaning and not helping:
+@@ -1158,6 +1156,8 @@ if not cleaning and not helping:
              confdefs.append("#define HAVE_LIBUSB 1\n")
              try:
                  usbflags = pkg_config('libusb-1.0')
-+                usbflags.append(["-ludev"])
++                if config.env['target_platform'].startswith('linux'):
++                    usbflags.append(["-ludev"])
              except OSError:
                  announce("pkg_config is confused about the state "
                           "of libusb-1.0.")
-@@ -1580,7 +1580,7 @@ if not cleaning and not helping:
- PYTHON_LIBDIR_CALL = "sysconfig.get_path('purelib')"
- 
- target_python_path = ''
--python_libdir = str(eval(PYTHON_LIBDIR_CALL))
-+python_libdir = os.environ.get('SP_DIR')
- 
- # flag if we have xgps* dependencies, so xgps* should run OK
- config.env['xgps_deps'] = False
-@@ -2659,6 +2663,7 @@ if ((not env['debug'] and
- 
- binaryinstall.append(env.Install(installdir('bindir'), bin_scripts))
- 
-+python_libdir = os.environ.get('SP_DIR')
- python_module_dir = str(python_libdir) + os.sep + 'gps'
- 
- python_modules_install = env.Install(DESTDIR + python_module_dir,
 diff --git a/clients/ppscheck.c b/clients/ppscheck.c
-index 6bd6c398d..e83bcdc97 100644
+index 7cdfe25..9164892 100644
 --- a/clients/ppscheck.c
 +++ b/clients/ppscheck.c
-@@ -600,7 +600,7 @@ int main(int argc, char *argv[])
+@@ -602,7 +602,7 @@ int main(int argc, char *argv[])
           * if (0 == ioctl(device_fd, TIOCGETD, &ldisc)) {
           * always returns ldisc == 0 */
          // set PPS line discipline
@@ -59,3 +55,6 @@ index 6bd6c398d..e83bcdc97 100644
          if (0 > ioctl(device_fd, TIOCSETD, &ldisc)) {
              (void)printf("ERROR: ioctl(%s, TIOCSETD, 18) failed: %.80s(%d)\n",
                           argv[1], strerror(errno), errno);
+-- 
+2.56.0
+

@@ -1,0 +1,73 @@
+schema_version: 1
+
+context:
+  version: "3.27.5"
+
+package:
+  name: gpsd
+  version: ${{ version }}
+
+source:
+  url: https://download.savannah.gnu.org/releases/gpsd/gpsd-${{ version }}.tar.xz
+  sha256: dc4a62bad835282bae788772bc7cc8f8bec4c7a48e8dceeb37477a89091c4656
+  patches:
+    - fix_build.patch
+    - patches/0001-fix-gpsprof-command-injection.patch
+
+build:
+  number: 0
+  skip: win
+  script: build.sh
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - scons
+    - pkg-config
+  host:
+    - python
+    - libusb
+    - if: linux
+      then: libudev
+    - ncurses
+    - pyserial
+    - matplotlib-base
+  run:
+    - python
+  run_exports:
+    - ${{ pin_subpackage('gpsd', upper_bound='x.x') }}
+
+tests:
+  - package_contents:
+      files:
+        - lib/pkgconfig/libgps.pc
+        - sbin/gpsd
+      include:
+        - gps.h
+      bin:
+        - gpsfake
+        - gpsprof
+  - python:
+      imports:
+        - gps
+      pip_check: false
+  - script:
+      - gpsfake -h
+      - cgps -h
+      - $PREFIX/sbin/gpsd -h
+      - python test_gpsprof.py
+    files:
+      recipe:
+        - test_gpsprof.py
+
+about:
+  homepage: https://gpsd.io
+  license: BSD-2-Clause
+  license_file: COPYING
+  summary: gpsd is a service daemon that monitors GPS or AIS receivers and makes their location, course, and velocity data available on TCP port 2947.
+
+extra:
+  recipe-maintainers:
+    - Tobias-Fischer
