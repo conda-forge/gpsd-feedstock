@@ -1,21 +1,21 @@
 schema_version: 1
 
 context:
-  version: "3.27.5"
+  version: "3.28"
 
 package:
   name: gpsd
   version: ${{ version }}
 
 source:
-  url: https://download.savannah.gnu.org/releases/gpsd/gpsd-${{ version }}.tar.xz
-  sha256: dc4a62bad835282bae788772bc7cc8f8bec4c7a48e8dceeb37477a89091c4656
+  url: https://download.savannah.gnu.org/releases/gpsd/gpsd-${{ version }}.tar.gz
+  sha256: 72f7937f36d98fb348e9fa044ad1e72955982ec5938609b18e4ee7c9e04f83f2
   patches:
     - fix_build.patch
     - patches/0001-fix-gpsprof-command-injection.patch
 
 build:
-  number: 1
+  number: 0
   skip: win
   script: build.sh
 
